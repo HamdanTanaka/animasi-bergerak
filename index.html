@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Praktik Animasi Pemrograman Sederhana</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #222;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 20px;
+    }
+    canvas {
+      display: block;
+      margin: 20px auto;
+      background-color: #444;
+      border: 2px solid #fff;
+    }
+    footer {
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Praktik Animasi Pemrograman Sederhana</h1>
+  <canvas id="kanvas" width="600" height="400"></canvas>
+
+  <footer>
+    &copy; 2025 Praktik Pemrograman Sederhana M.Hamdan Alawi XI RPL. 
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('kanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Objek animasi: persegi, bola, segitiga
+    const objek = [
+      { type: "circle", x: 100, y: 100, r: 20, dx: 3, dy: 2, color: "red" },
+      { type: "rect", x: 200, y: 200, w: 40, h: 40, dx: 2, dy: -3, color: "lime" },
+      { type: "triangle", x: 300, y: 150, size: 40, dx: -2, dy: 2.5, color: "yellow" }
+    ];
+
+    function drawCircle(o) {
+      ctx.beginPath();
+      ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+      ctx.fillStyle = o.color;
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function drawRect(o) {
+      ctx.fillStyle = o.color;
+      ctx.fillRect(o.x, o.y, o.w, o.h);
+    }
+
+    function drawTriangle(o) {
+      const s = o.size;
+      ctx.beginPath();
+      ctx.moveTo(o.x, o.y);
+      ctx.lineTo(o.x - s / 2, o.y + s);
+      ctx.lineTo(o.x + s / 2, o.y + s);
+      ctx.closePath();
+      ctx.fillStyle = o.color;
+      ctx.fill();
+    }
+
+    function update() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      objek.forEach(o => {
+        // Gerakkan objek
+        o.x += o.dx;
+        o.y += o.dy;
+
+        // Pantulan dari tepi
+        if (o.type === "circle") {
+          if (o.x + o.r > canvas.width || o.x - o.r < 0) o.dx *= -1;
+          if (o.y + o.r > canvas.height || o.y - o.r < 0) o.dy *= -1;
+          drawCircle(o);
+        } else if (o.type === "rect") {
+          if (o.x + o.w > canvas.width || o.x < 0) o.dx *= -1;
+          if (o.y + o.h > canvas.height || o.y < 0) o.dy *= -1;
+          drawRect(o);
+        } else if (o.type === "triangle") {
+          if (o.x + o.size / 2 > canvas.width || o.x - o.size / 2 < 0) o.dx *= -1;
+          if (o.y + o.size > canvas.height || o.y < 0) o.dy *= -1;
+          drawTriangle(o);
+        }
+      });
+
+      requestAnimationFrame(update);
+    }
+
+    update();
+  </script>
+</body>
+</html>
